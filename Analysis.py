@@ -14,13 +14,15 @@ def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df
     salaries_df = salaries_df[salaries_df['yearID'] >= 2015]
     awards_df = awards_df[awards_df['yearID'] >= 2015]
 
-    # Merge batting and salary data
-    merged_df = pd.merge(batting_df, salaries_df, on=['playerID', 'yearID'], how='inner')
-    
+    # Merge batting, pitching, and salary data
+    merged_df = pd.merge(batting_df, pitching_df, on=['playerID', 'yearID'], how='inner')
+    merged_df = pd.merge(merged_df, salaries_df, on=['playerID', 'yearID'], how='inner')
+    merged_df = pd.merge(merged_df, awards_df, on=['playerID', 'yearID'], how='inner')
+
     # Calculate batting average (AVG) and player value
     merged_df['AVG'] = merged_df['H'] / merged_df['AB']
     merged_df['PlayerValue'] = merged_df['AVG'] / merged_df['salary']
-    
+
     # Get top 10 undervalued players based on PlayerValue
     undervalued_players = merged_df.sort_values(by='PlayerValue', ascending=False).head(10)
     return undervalued_players
