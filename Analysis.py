@@ -23,15 +23,15 @@ def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df
     print(merged_df.columns)
 
     # Calculate batting average (AVG) and player value
-    if 'H' in merged_df.columns and 'AB' in merged_df.columns:
-        merged_df['AVG'] = merged_df['H'] / merged_df['AB']
+    if 'H_batting' in merged_df.columns and 'AB' in merged_df.columns:
+        merged_df['AVG'] = merged_df['H_batting'] / merged_df['AB']
         merged_df['PlayerValue'] = merged_df['AVG'] / merged_df['salary']
         
         # Get top 10 undervalued players based on PlayerValue
         undervalued_players = merged_df.sort_values(by='PlayerValue', ascending=False).head(10)
         return undervalued_players
     else:
-        print("Required columns 'H' or 'AB' not found in the merged DataFrame.")
+        print("Required columns 'H_batting' or 'AB' not found in the merged DataFrame.")
         return None
 
 def main():
