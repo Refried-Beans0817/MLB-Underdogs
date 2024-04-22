@@ -18,13 +18,21 @@ def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df
     merged_df = pd.merge(batting_df, pitching_df, on=['playerID', 'yearID', 'teamID'], how='inner', suffixes=('_batting', '_pitching'))
     merged_df = pd.merge(merged_df, salaries_df, on=['playerID', 'yearID', 'teamID'], how='inner', suffixes=('_merged', '_salaries'))
 
-    # Calculate batting average (AVG) and player value
-    merged_df['AVG'] = merged_df['H'] / merged_df['AB']
-    merged_df['PlayerValue'] = merged_df['AVG'] / merged_df['salary']
+    # Debugging: Print columns of the merged DataFrame
+    print("Columns of Merged DataFrame:")
+    print(merged_df.columns)
 
-    # Get top 10 undervalued players based on PlayerValue
-    undervalued_players = merged_df.sort_values(by='PlayerValue', ascending=False).head(10)
-    return undervalued_players
+    # Calculate batting average (AVG) and player value
+    if 'H' in merged_df.columns and 'AB' in merged_df.columns:
+        merged_df['AVG'] = merged_df['H'] / merged_df['AB']
+        merged_df['PlayerValue'] = merged_df['AVG'] / merged_df['salary']
+        
+        # Get top 10 undervalued players based on PlayerValue
+        undervalued_players = merged_df.sort_values(by='PlayerValue', ascending=False).head(10)
+        return undervalued_players
+    else:
+        print("Required columns 'H' or 'AB' not found in the merged DataFrame.")
+        return None
 
 def main():
     # Specify the file paths for your CSV data
@@ -42,8 +50,9 @@ def main():
     # Perform data analysis to identify undervalued players
     if batting_df is not None and pitching_df is not None and salaries_df is not None and awards_df is not None:
         undervalued_players = identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df)
-        print("\nTop 10 Undervalued Players (Based on AVG and Salary) after 2015:")
-        print(undervalued_players[['playerID', 'yearID', 'AVG', 'salary', 'PlayerValue']].head(10))
+        if undervalued_players is not None:
+            print("\nTop 10 Undervalued Players (Based on AVG and Salary) after 2015:")
+            print(undervalued_players[['playerID', 'yearID', 'AVG', 'salary', 'PlayerValue']].head(10))
 
 if __name__ == "__main__":
     main()
