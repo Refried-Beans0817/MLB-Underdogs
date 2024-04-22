@@ -29,6 +29,16 @@ def main():
     salaries_df = load_data(salaries_file_path)
     awards_df = load_data(awards_file_path)
 
+    # Filter for years after 2015
+    if batting_df is not None:
+        batting_df = batting_df[batting_df['yearID'] > 2015]
+    if pitching_df is not None:
+        pitching_df = pitching_df[pitching_df['yearID'] > 2015]
+    if salaries_df is not None:
+        salaries_df = salaries_df[salaries_df['yearID'] > 2015]
+    if awards_df is not None:
+        awards_df = awards_df[awards_df['yearID'] > 2015]
+
     # Display the first few rows of the Batting DataFrame as an example
     if batting_df is not None:
         print("Batting DataFrame:")
