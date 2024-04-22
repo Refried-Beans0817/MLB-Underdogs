@@ -17,7 +17,6 @@ def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df
     # Merge batting, pitching, and salary data with suffixes
     merged_df = pd.merge(batting_df, pitching_df, on=['playerID', 'yearID', 'teamID'], how='inner', suffixes=('_batting', '_pitching'))
     merged_df = pd.merge(merged_df, salaries_df, on=['playerID', 'yearID', 'teamID'], how='inner', suffixes=('_merged', '_salaries'))
-    merged_df = pd.merge(merged_df, awards_df, on=['playerID', 'yearID', 'awardID'], how='inner', suffixes=('_merged', '_awards'))
 
     # Calculate batting average (AVG) and player value
     merged_df['AVG'] = merged_df['H'] / merged_df['AB']
