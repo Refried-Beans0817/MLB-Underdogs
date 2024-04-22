@@ -8,7 +8,7 @@ def load_data(file_path):
         return None
 
 def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df):
-    # Filter data for years 2016 and onwards
+    # Filter data for years 2015 and onwards
     batting_df = batting_df[batting_df['yearID'] >= 2015]
     pitching_df = pitching_df[pitching_df['yearID'] >= 2015]
     salaries_df = salaries_df[salaries_df['yearID'] >= 2015]
