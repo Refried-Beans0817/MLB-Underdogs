@@ -18,10 +18,10 @@ def identify_undervalued_players(batting_df, salaries_df):
 
 def main():
     # Specify the file paths for your CSV data
-    batting_file_path = 'Documents/MLB/Batting.csv'
-    pitching_file_path = 'Documents/MLB/Pitching.csv'
-    salaries_file_path = 'Documents/MLB/Salaries.csv'
-    awards_file_path = 'Documents/MLB/AwardsPlayers.csv'
+    batting_file_path = 'C:/Users/rmart/Documents/MLB/Batting.csv'
+    pitching_file_path = 'C:/Users/rmart/Documents/MLB/Pitching.csv'
+    salaries_file_path = 'C:/Users/rmart/Documents/MLB/Salaries.csv'
+    awards_file_path = 'C:/Users/rmart/Documents/MLB/AwardsPlayers.csv'
 
     # Load CSV files into pandas DataFrames
     batting_df = load_data(batting_file_path)
