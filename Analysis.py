@@ -7,12 +7,21 @@ def load_data(file_path):
         print(f"Error: {e}. Please check if the file path '{file_path}' is correct.")
         return None
 
-def identify_undervalued_players(batting_df, salaries_df):
-    # Add your data analysis code here to identify undervalued players
-    # For example, calculate player value based on batting statistics and salaries
+def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df):
+    # Filter data for years 2016 and onwards
+    batting_df = batting_df[batting_df['yearID'] >= 2015]
+    pitching_df = pitching_df[pitching_df['yearID'] >= 2015]
+    salaries_df = salaries_df[salaries_df['yearID'] >= 2015]
+    awards_df = awards_df[awards_df['yearID'] >= 2015]
+
+    # Merge batting and salary data
     merged_df = pd.merge(batting_df, salaries_df, on=['playerID', 'yearID'], how='inner')
+    
+    # Calculate batting average (AVG) and player value
     merged_df['AVG'] = merged_df['H'] / merged_df['AB']
     merged_df['PlayerValue'] = merged_df['AVG'] / merged_df['salary']
+    
+    # Get top 10 undervalued players based on PlayerValue
     undervalued_players = merged_df.sort_values(by='PlayerValue', ascending=False).head(10)
     return undervalued_players
 
@@ -29,29 +38,11 @@ def main():
     salaries_df = load_data(salaries_file_path)
     awards_df = load_data(awards_file_path)
 
-    # Filter for years after 2015
-    if batting_df is not None:
-        batting_df = batting_df[batting_df['yearID'] > 2015]
-    if pitching_df is not None:
-        pitching_df = pitching_df[pitching_df['yearID'] > 2015]
-    if salaries_df is not None:
-        salaries_df = salaries_df[salaries_df['yearID'] > 2015]
-    if awards_df is not None:
-        awards_df = awards_df[awards_df['yearID'] > 2015]
-
-    # Display the first few rows of the Batting DataFrame as an example
-    if batting_df is not None:
-        print("Batting DataFrame:")
-        print(batting_df.head())
-
     # Perform data analysis to identify undervalued players
-    if batting_df is not None and salaries_df is not None:
-        undervalued_players = identify_undervalued_players(batting_df, salaries_df)
-        print("\nTop 10 Undervalued Players (Based on AVG and Salary):")
+    if batting_df is not None and pitching_df is not None and salaries_df is not None and awards_df is not None:
+        undervalued_players = identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df)
+        print("\nTop 10 Undervalued Players (Based on AVG and Salary) after 2015:")
         print(undervalued_players[['playerID', 'yearID', 'AVG', 'salary', 'PlayerValue']].head(10))
-
-    # Save or display your analysis results here
-    # Add code here to save results to a file or display them as needed
 
 if __name__ == "__main__":
     main()
