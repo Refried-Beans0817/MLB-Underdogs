@@ -1,4 +1,5 @@
 import pandas as pd
+import pymysql
 
 def load_data(file_path):
     try:
@@ -18,10 +19,6 @@ def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df
     merged_df = pd.merge(batting_df, pitching_df, on=['playerID', 'yearID', 'teamID'], how='inner', suffixes=('_batting', '_pitching'))
     merged_df = pd.merge(merged_df, salaries_df, on=['playerID', 'yearID', 'teamID'], how='inner', suffixes=('_merged', '_salaries'))
 
-    # Debugging: Print columns of the merged DataFrame
-    print("Columns of Merged DataFrame:")
-    print(merged_df.columns)
-
     # Calculate batting average (AVG) and player value
     if 'H_batting' in merged_df.columns and 'AB' in merged_df.columns:
         merged_df['AVG'] = merged_df['H_batting'] / merged_df['AB']
@@ -34,12 +31,12 @@ def identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df
         print("Required columns 'H_batting' or 'AB' not found in the merged DataFrame.")
         return None
 
-def main():
+def lambda_handler(event, context):
     # Specify the file paths for your CSV data
-    batting_file_path = 'C:/Users/rmart/Documents/MLB/Batting.csv'
-    pitching_file_path = 'C:/Users/rmart/Documents/MLB/Pitching.csv'
-    salaries_file_path = 'C:/Users/rmart/Documents/MLB/Salaries.csv'
-    awards_file_path = 'C:/Users/rmart/Documents/MLB/AwardsPlayers.csv'
+    batting_file_path = 's3://team3mlbunderdogs/Baseball Databank/Batting.csv'
+    pitching_file_path = 's3://team3mlbunderdogs/Baseball Databank/Pitching.csv'
+    salaries_file_path = 's3://team3mlbunderdogs/Baseball Databank/Salaries.csv'
+    awards_file_path = 's3://team3mlbunderdogs/Baseball Databank/AwardsPlayers.csv'
 
     # Load CSV files into pandas DataFrames
     batting_df = load_data(batting_file_path)
@@ -51,8 +48,17 @@ def main():
     if batting_df is not None and pitching_df is not None and salaries_df is not None and awards_df is not None:
         undervalued_players = identify_undervalued_players(batting_df, pitching_df, salaries_df, awards_df)
         if undervalued_players is not None:
-            print("\nTop 10 Undervalued Players (Based on AVG and Salary) after 2015:")
-            print(undervalued_players[['playerID', 'yearID', 'AVG', 'salary', 'PlayerValue']].head(10))
-
-if __name__ == "__main__":
-    main()
+            return {
+                'statusCode': 200,
+                'body': undervalued_players.to_dict(orient='records')
+            }
+        else:
+            return {
+                'statusCode': 500,
+                'body': "Failed to identify undervalued players."
+            }
+    else:
+        return {
+            'statusCode': 500,
+            'body': "Failed to load CSV files."
+        }
