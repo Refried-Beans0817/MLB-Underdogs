@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchPlayers() {
     try {
-        const response = await fetch('https://your-api-endpoint.com/undervalued-players');
+        const response = await fetch('https://88mw0qv9hb.execute-api.us-west-1.amazonaws.com/prod');
         const data = await response.json();
         displayPlayers(data);
     } catch (error) {
