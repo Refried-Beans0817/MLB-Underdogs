@@ -1,4 +1,5 @@
 import pymysql
+import pandas as pd
 
 def lambda_handler(event, context):
     # Connect to the MySQL database
